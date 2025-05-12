@@ -1,28 +1,48 @@
+import {chart} from "./chartData.js";
+
 $(function() {
     var $searchButton = $("#search button")
     var $searchText = $("#search input")
+    // search employee
+
+    function showChildren($node){
+        let $level = $node.data('nodeData').level
+        let $parent = $node
+        for (let i=0; i<$level-1; i++){
+            $parent = oc.getParent($parent)
+            // if (!oc.getNodeState($parent, 'children'))[1]
+                oc.showChildren($parent)
+        }
+    }
 
     $searchButton.on('click', ()=>{
         for (let i=0; i<employees.length; i++){
             if ($searchText.val().trim()!=='' && employees[i].name.toLowerCase().includes($searchText.val().toLowerCase())){
+            try {
+                showChildren($(`.node${employees[i].id}`))
+            }catch (e){
+                console.log(e)
+            }
 
                 $(`.node${employees[i].id}`).addClass('highlight')
                     setTimeout(()=>$(`.node${employees[i].id}`).removeClass('highlight'), 2000)
                 try{
-                   console.log($(`#image${employees[i].id}`).offset())
-                    console.log($("#chart").offset())
+                   // console.log($(`#image${employees[i].id}`).offset())
                     let $nodeLeft = $(`#image${employees[i].id}`).offset().left
                     let $nodeWidth = $(`#image${employees[i].id}`).outerWidth()
                     let $nodeCenter = $nodeLeft + $nodeWidth / 2
 
                     let $chartLeft = $(`#chart`).offset().left
                     let $chartWidth = $(`#chart`).width()
+                    let $cardHeight= $(`#chart`).height()
                     let $scrollLeft = $nodeLeft - $chartLeft - $chartWidth / 2;
                     $("#chart").animate({
-                        scrollTop: $(`#image${employees[i].id}`).offset().top - 100,
-                        // scrollLeft: $scrollLeft
+                        scrollTop: $(`#image${employees[i].id}`).offset().top,
+                        // scrollLeft: $(`#image${employees[i].id}`).offset().left
                     }, 1000)
-                    console.log($(`#image${employees[i].id}`).offset())
+                    // console.log('card - ', $(`#image${employees[i].id}`).offset())
+                    // console.log('chart - ', $(`#image${employees[i].id}`).marginTop)
+                    // console.log()
                   }catch(e){
                     console.log(e)
                   }
@@ -32,296 +52,19 @@ $(function() {
 
     var $zoomIn = $("#zoomIn")
     $zoomIn.on('click', ()=>{
-        console.log($(".orgchart"))
+        if ($(".orgchart")[0].style.scale<2.5)
+        $(".orgchart")[0].style.scale = Number($(".orgchart")[0].style.scale) + 0.05
     })
-
-    var datascource = {
-  "name": "Lao Lao",
-  "title": "General Manager",
-  "id": "1",
-  "img_url": "https://example.com/images/employee_1.jpg",
-  "children": [
-    {
-      "name": "Su Miao",
-      "title": "Department Manager",
-      "department": "Department_1",
-      "id": "2",
-      "parentId": "1",
-      "img_url": "https://example.com/images/employee_2.jpg",
-      "children": [
-        {
-          "name": "Tie Hua",
-          "title": "Senior Engineer",
-          "id": "3",
-          "parentId": "2",
-          "img_url": "https://example.com/images/employee_3.jpg"
-        },
-        {
-          "name": "Yu Lei",
-          "title": "Team Lead Manager",
-          "department": "Department_1",
-          "id": "4",
-          "parentId": "2",
-          "img_url": "https://example.com/images/employee_4.jpg",
-          "children": [
-            {
-              "name": "Pang Pang",
-              "title": "Engineer",
-              "id": "5",
-              "parentId": "4",
-              "img_url": "https://example.com/images/employee_5.jpg"
-            },
-            {
-              "name": "Xiang Xiang",
-              "title": "UE Engineer",
-              "id": "6",
-              "parentId": "4",
-              "img_url": "https://example.com/images/employee_6.jpg"
-            },
-            {
-              "name": "Jin Jin",
-              "title": "Engineer",
-              "id": "7",
-              "parentId": "4",
-              "img_url": "https://example.com/images/employee_7.jpg"
-            }
-          ]
-        },
-        {
-          "name": "Hei Hei",
-          "title": "Senior Engineer",
-          "id": "8",
-          "parentId": "2",
-          "img_url": "https://example.com/images/employee_8.jpg"
-        }
-      ]
-    },
-    {
-      "name": "Hong Miao",
-      "title": "Department Manager",
-      "department": "Department_2",
-      "id": "9",
-      "parentId": "1",
-      "img_url": "https://example.com/images/employee_9.jpg",
-      "children": [
-        {
-          "name": "Chun Li",
-          "title": "Senior Engineer",
-          "id": "10",
-          "parentId": "9",
-          "img_url": "https://example.com/images/employee_10.jpg"
-        },
-        {
-          "name": "Mei Ling",
-          "title": "Team Lead Manager",
-          "department": "Department_2",
-          "id": "11",
-          "parentId": "9",
-          "img_url": "https://example.com/images/employee_11.jpg",
-          "children": [
-            {
-              "name": "Wei Wei",
-              "title": "Engineer",
-              "id": "12",
-              "parentId": "11",
-              "img_url": "https://example.com/images/employee_12.jpg"
-            },
-            {
-              "name": "Lan Lan",
-              "title": "UE Engineer",
-              "id": "13",
-              "parentId": "11",
-              "img_url": "https://example.com/images/employee_13.jpg"
-            },
-            {
-              "name": "Qi Qi",
-              "title": "Engineer",
-              "id": "14",
-              "parentId": "11",
-              "img_url": "https://example.com/images/employee_14.jpg"
-            }
-          ]
-        },
-        {
-          "name": "Zhen Hua",
-          "title": "Senior Engineer",
-          "id": "15",
-          "parentId": "9",
-          "img_url": "https://example.com/images/employee_15.jpg"
-        }
-      ]
-    },
-    {
-      "name": "Chun Miao",
-      "title": "Department Manager",
-      "department": "Department_3",
-      "id": "16",
-      "parentId": "1",
-      "img_url": "https://example.com/images/employee_16.jpg",
-      "children": [
-        {
-          "name": "Bao Bao",
-          "title": "Senior Engineer",
-          "id": "17",
-          "parentId": "16",
-          "img_url": "https://example.com/images/employee_17.jpg"
-        },
-        {
-          "name": "Lin Lin",
-          "title": "Team Lead Manager",
-          "department": "Department_3",
-          "id": "18",
-          "parentId": "16",
-          "img_url": "https://example.com/images/employee_18.jpg",
-          "children": [
-            {
-              "name": "Hua Hua",
-              "title": "Engineer",
-              "id": "19",
-              "parentId": "18",
-              "img_url": "https://example.com/images/employee_19.jpg"
-            },
-            {
-              "name": "Ming Ming",
-              "title": "UE Engineer",
-              "id": "20",
-              "parentId": "18",
-              "img_url": "https://example.com/images/employee_20.jpg"
-            },
-            {
-              "name": "Tao Tao",
-              "title": "Engineer",
-              "id": "21",
-              "parentId": "18",
-              "img_url": "https://example.com/images/employee_21.jpg"
-            }
-          ]
-        },
-        {
-          "name": "Jia Jia",
-          "title": "Senior Engineer",
-          "id": "22",
-          "parentId": "16",
-          "img_url": "https://example.com/images/employee_22.jpg"
-        }
-      ]
-    },
-    {
-      "name": "Wei Zhang",
-      "title": "Department Manager",
-      "department": "Department_4",
-      "id": "23",
-      "parentId": "1",
-      "img_url": "https://example.com/images/employee_23.jpg",
-      "children": [
-        {
-          "name": "Feng Chen",
-          "title": "Senior Engineer",
-          "id": "24",
-          "parentId": "23",
-          "img_url": "https://example.com/images/employee_24.jpg"
-        },
-        {
-          "name": "Xiao Wang",
-          "title": "Team Lead Manager",
-          "department": "Department_4",
-          "id": "25",
-          "parentId": "23",
-          "img_url": "https://example.com/images/employee_25.jpg",
-          "children": [
-            {
-              "name": "Li Jun",
-              "title": "Engineer",
-              "id": "26",
-              "parentId": "25",
-              "img_url": "https://example.com/images/employee_26.jpg"
-            },
-            {
-              "name": "Yan Yan",
-              "title": "UE Engineer",
-              "id": "27",
-              "parentId": "25",
-              "img_url": "https://example.com/images/employee_27.jpg"
-            },
-            {
-              "name": "Bo Bo",
-              "title": "Engineer",
-              "id": "28",
-              "parentId": "25",
-              "img_url": "https://example.com/images/employee_28.jpg"
-            }
-          ]
-        },
-        {
-          "name": "Hao Ran",
-          "title": "Senior Engineer",
-          "id": "29",
-          "parentId": "23",
-          "img_url": "https://example.com/images/employee_29.jpg"
-        }
-      ]
-    },
-    {
-      "name": "Jing Liu",
-      "title": "Department Manager",
-      "department": "Department_5",
-      "id": "30",
-      "parentId": "1",
-      "img_url": "https://example.com/images/employee_30.jpg",
-      "children": [
-        {
-          "name": "Kai Yang",
-          "title": "Senior Engineer",
-          "id": "31",
-          "parentId": "30",
-          "img_url": "https://example.com/images/employee_31.jpg"
-        },
-        {
-          "name": "Ning Xu",
-          "title": "Team Lead Manager",
-          "department": "Department_5",
-          "id": "32",
-          "parentId": "30",
-          "img_url": "https://example.com/images/employee_32.jpg",
-          "children": [
-            {
-              "name": "Rui Rui",
-              "title": "Engineer",
-              "id": "33",
-              "parentId": "32",
-              "img_url": "https://example.com/images/employee_33.jpg"
-            },
-            {
-              "name": "Shan Shan",
-              "title": "UE Engineer",
-              "id": "34",
-              "parentId": "32",
-              "img_url": "https://example.com/images/employee_34.jpg"
-            },
-            {
-              "name": "Lei Lei",
-              "title": "Engineer",
-              "id": "35",
-              "parentId": "32",
-              "img_url": "https://example.com/images/employee_35.jpg"
-            }
-          ]
-        },
-        {
-          "name": "Zhi Wei",
-          "title": "Senior Engineer",
-          "id": "36",
-          "parentId": "30",
-          "img_url": "https://example.com/images/employee_36.jpg"
-        }
-      ]
-    }
-  ]
-}
-
+// document.getElementById('er').addEventListener('mousedown')
+     var $zoomOut = $("#zoomOut")
+    $zoomOut.on('click', ()=>{
+        if ($(".orgchart")[0].style.scale>0.2)
+        $(".orgchart")[0].style.scale = Number($(".orgchart")[0].style.scale) - 0.05
+    })
 
     var employees = []
 
+       // remove employee
 
        function removePopUp($name, $id, $node, $data){
         let $modalJQ = $("<dialog>", {
@@ -406,6 +149,8 @@ $(function() {
         })
        }
 
+
+       // add employee
 
        function AddEmployee($node, $data){
         let $modalJQ = $("<dialog>", {
@@ -540,6 +285,7 @@ $(function() {
        })
        }
 
+       //change manager of employee
 
        function updateHierarchy($employeeData, $managerData){
 
@@ -565,8 +311,10 @@ $(function() {
         })
        }
 
+       // create a chart
+
     let oc = $('#chart').orgchart({
-      'data' : datascource,
+      'data' : chart,
       'nodeContent': 'title',
       'toggleSiblingsResp': true,
       'visibleLevel': '3',
@@ -578,8 +326,84 @@ $(function() {
       'zoominLimit': 5,
       'zoomoutLimit': 0.7,
       'nodeTemplate': function(data){
+      //
+      //   let $divCont = $("<div>", {
+      //     'class': 'userInfo'
+      //   })
+      //
+      //   let $name = $("<input>", {
+      //     'value': data.name,
+      //     'readonly': true,
+      //     'class': 'employeeName'
+      //   })
+      //
+      //   let $title = $("<input>", {
+      //     'value': data.title,
+      //     'readonly': true,
+      //     'class': 'employeeTitle'
+      //   })
+      //
+      //   let $department = $("<input>", {
+      //     'value': data.department || 'add department',
+      //     'readonly': true,
+      //     'class': 'employeeDepartment'
+      //   })
+      //
+      // let $employeeIndex = employees.findIndex(function (e){
+      //       return Number(e.id)+1 === Number(data.id)
+      //   })
+      //
+      //   let $parentIndex = employees.findIndex((e)=>{
+      //       return Number(e.id)+1 === Number(data.parentId)
+      //       })
+      //
+      //   $name.on('dblclick', ()=>{
+      //     $name.prop('readonly', false).focus();
+      //   })
+      //
+      //   $name.on('keypress', (e)=>{
+      //     if (e.key === 'Enter'){
+      //       $name.prop('readonly', true).focus();
+      //       data.name = $name.val()
+      //         employees[$employeeIndex+1].name= $name.val()
+      //         console.log($employeeIndex)
+      //     }
+      //   })
+      //
+      //   $title.on('dblclick', ()=>{
+      //     $title.prop('readonly', false).focus();
+      //   })
+      //
+      //   $title.on('keypress', (e)=>{
+      //     if (e.key === 'Enter'){
+      //       $title.prop('readonly', true).focus();
+      //       data.title =$title.val()
+      //       employees[$employeeIndex+1].title = $title.val()
+      //     }
+      //   })
+      //
+      //   $department.on('dblclick', ()=>{
+      //     $department.prop('readonly', false).focus();
+      //   })
+      //
+      //   $department.on('keypress', (e)=>{
+      //     if (e.key === 'Enter'){
+      //       $department.prop('readonly', true).focus();
+      //       data.$department =$title.val()
+      //       employees[$employeeIndex+1].$department = $department.val()
+      //     }
+      //   })
+      //
+      //
+      //   $divCont.append($name)
+      //   $divCont.append($title)
+      //   $divCont.append($department)
+      //
+      //   return $divCont
+      },
+      'createNode': function($node, data) {
 
-        let $divCont = $("<div>", {
+          let $divCont = $("<div>", {
           'class': 'userInfo'
         })
 
@@ -595,15 +419,28 @@ $(function() {
           'class': 'employeeTitle'
         })
 
-      let $employeeIndex = employees.findIndex(function (e){
+        let $department = $("<input>", {
+          'value': data.department || 'add department',
+          'readonly': true,
+          'class': 'employeeDepartment'
+
+        })
+        let $imageContainer = $("<div>", {
+            'class': 'imgContainer',
+            'id': `image${data.id}`
+        })
+          employees.push(data)
+
+        let $image = $("<img>", {
+            'class': 'avatar imgContainer',
+            'src': window.STATIC_URLS.exampleImage
+        })
+
+          let $employeeIndex = employees.findIndex(function (e){
             return Number(e.id)+1 === Number(data.id)
         })
 
-        let $parentIndex = employees.findIndex((e)=>{
-            return Number(e.id)+1 === Number(data.parentId)
-            })
-
-        $name.on('dblclick', ()=>{
+          $name.on('dblclick', ()=>{
           $name.prop('readonly', false).focus();
         })
 
@@ -628,26 +465,27 @@ $(function() {
           }
         })
 
+        $department.on('dblclick', ()=>{
+          $department.prop('readonly', false).focus();
+        })
+
+        $department.on('keypress', (e)=>{
+          if (e.key === 'Enter'){
+            $department.prop('readonly', true).focus();
+            data.$department =$title.val()
+            employees[$employeeIndex+1].$department = $department.val()
+          }
+        })
+
 
         $divCont.append($name)
         $divCont.append($title)
-
-        return $divCont
-      },
-      'createNode': function($node, data) {
-        let $imageContainer = $("<div>", {
-            'class': 'imgContainer',
-            'id': `image${data.id}`
-        })
-          employees.push(data)
-
-        let $image = $("<img>", {
-            'class': 'avatar imgContainer',
-            'src': window.STATIC_URLS.exampleImage
-        })
+        $divCont.append($department)
 
           $imageContainer.append($image)
+          $node.prepend($divCont)
           $node.prepend($imageContainer)
+
 
             let $deleteButton = $("<i>", {
               'class': 'remove fa-solid fa-user-minus',
@@ -692,19 +530,41 @@ $(function() {
         }
     })
 
+    oc.$chart.on('init.orgchart', ()=>{
+        $(".orgchart")[0].style.scale = 0.6
+    })
+
 // screenshot the chart
+    var getCanvas;
+     $("#createPreview").on('click', function () {
+         html2canvas($("#chart"), {
+             'backgroundColor': 'green',
+         onrendered: function (canvas) {
+                $("#preview").append(canvas);
+                getCanvas = canvas;
+             },
+    useCORS: true,
+    allowTaint: true
+         });
+    });
 
     $("#export").on('click', ()=>{
       html2canvas($('#chart'), {
+          'scale': 0.5,
+          'backgroundColor': 'green',
         onrendered: function(canvas) {
           let dataURL = canvas.toDataURL('image/png')
           let a  = document.createElement('a');
           a.href = dataURL;
           a.download = 'orgChart.png'
           a.click()
-        }
+        },
+          // useCORS: true,
+          // scale: 2
+          // allowTaint: true
       });
     })
+
 
    });
 

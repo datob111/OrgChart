@@ -35,12 +35,21 @@
         <button><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         </div>
+    <div id="zooms">
+        <button id="zoomIn" style="color: white"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+        <button id="zoomOut" style="color: white"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+    </div>
 </div>
     <div class="main">
+
             <div id="chart"></div>
     </div>
 
-    <script src="{% static 'JS/main.js' %}"></script>
+<button style="color: white" id="createPreview">preview</button>
+<div id="preview"></div>
+
+    <script src="{% static 'JS/main.js' %}" type="module"></script>
+    <script src="{% static 'JS/chartData.js' %}"></script>
 <script>
     window.STATIC_URLS = {
         exampleImage: "{% static 'default_profile.jpg' %}"
